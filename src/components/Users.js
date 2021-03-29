@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getUsers } from "../api/index";
+import { Link } from "react-router-dom";
 
-const Users = () => {
-  let userArray;
-  fetch("https://jsonplaceholder.typicode.com/users")
-    .then((response) => response.json())
-    .then((users) => (userArray = users));
+const Users = (props) => {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getUsers().then((data) => {
+      setUsers(data);
+      props.users(data);
+    });
+  }, []);
 
   return (
     <div>
-      {userArray.map((user) => (
-        <p>{user.name}</p>
+      {users.map((user) => (
+        <li key={user.id}>
+          <Link to={`/users/${user.id}`}>{user.name}</Link>
+        </li>
       ))}
     </div>
   );
